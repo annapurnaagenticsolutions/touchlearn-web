@@ -13,24 +13,23 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     useEffect(() => {
         tts.speak("Pop the bubbles! Tap to pop!", false);
         const interval = setInterval(() => {
-            if (score >= WIN_SCORE) return;
             setBubbles(prev => {
-                if (prev.length > 12) return prev;
+                if (prev.length > 8) return prev;
                 return [...prev, {
                     id: Date.now() + Math.random(),
-                    x: Math.random() * 75 + 12,
-                    y: 100,
+                    x: Math.random() * 70 + 15,
+                    y: 85,
                     color: ['#FFB5E8', '#B28DFF', '#85E3FF', '#AFF8DB', '#FFFFD1', '#FFC9DE'][Math.floor(Math.random() * 6)]
                 }];
             });
-        }, 1800);
+        }, 1500);
         return () => clearInterval(interval);
-    }, [score]);
+    }, []);
 
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 0.4 })).filter(b => b.y > -20));
-        }, 100);
+            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 1.2 })).filter(b => b.y > -15));
+        }, 50);
         return () => clearInterval(moveInterval);
     }, []);
 
