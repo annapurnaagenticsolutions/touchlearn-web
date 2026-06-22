@@ -38,13 +38,15 @@ export const HomeLanding: React.FC<Props & { onPick: (index: number) => void }> 
         "Math & Science": "🔢"
     };
 
+    const colors = ['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA'];
+
     return (
         <div style={{ padding: '20px', width: '100%', maxWidth: '800px', margin: '0 auto', height: '100%', overflowY: 'auto' }}>
-            <h1 style={{ color: '#F9E2AF', fontSize: '24px', fontWeight: 'bold', marginBottom: '24px', textAlign: 'center' }}>
-                What would you like to learn today?
+            <h1 style={{ color: '#1E1E2E', fontSize: '32px', fontWeight: '900', marginBottom: '24px', textAlign: 'center', textShadow: '2px 2px 4px rgba(255,255,255,0.5)' }}>
+                What would you like to play today? 🎮
             </h1>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '20px', paddingBottom: '40px' }}>
                 {featured.map((name, index) => (
                     <div 
                         key={name}
@@ -53,29 +55,38 @@ export const HomeLanding: React.FC<Props & { onPick: (index: number) => void }> 
                             onPick(index);
                         }}
                         style={{
-                            backgroundColor: '#313244',
-                            borderRadius: '16px',
-                            height: '100px',
+                            backgroundColor: colors[index % colors.length],
+                            borderRadius: '24px',
+                            height: '120px',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: 'bold',
-                            color: '#CDD6F4',
-                            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            color: '#1E1E2E',
+                            boxShadow: '0 8px 15px rgba(0,0,0,0.1)',
                             userSelect: 'none',
                             textAlign: 'center',
-                            padding: '8px'
+                            padding: '12px',
+                            transition: 'transform 0.1s ease-in-out'
+                        }}
+                        onPointerDown={(e) => {
+                            (e.currentTarget as HTMLDivElement).style.transform = 'scale(0.95)';
+                        }}
+                        onPointerUp={(e) => {
+                            (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)';
+                        }}
+                        onPointerLeave={(e) => {
+                            (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)';
                         }}
                     >
-                        <span style={{ fontSize: '32px', marginBottom: '8px' }}>{emojis[name] || "🎮"}</span>
+                        <span style={{ fontSize: '40px', marginBottom: '8px' }}>{emojis[name] || "🎮"}</span>
                         {name}
                     </div>
                 ))}
             </div>
-            <div style={{ height: '40px' }} />
         </div>
     );
 };

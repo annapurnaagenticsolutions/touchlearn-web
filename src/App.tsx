@@ -91,16 +91,17 @@ function App() {
 
   return (
     <div style={{ 
-      backgroundColor: '#1E1E2E', 
       minHeight: '100vh', 
       width: '100vw',
-      fontFamily: 'sans-serif',
-      color: 'white',
+      fontFamily: "'Nunito', sans-serif",
+      color: '#1E1E2E',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {renderGame()}
+      <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+        {renderGame()}
+      </div>
     </div>
   );
 }

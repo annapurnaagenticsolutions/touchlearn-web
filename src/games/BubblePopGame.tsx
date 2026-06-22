@@ -44,15 +44,16 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div
                     key={b.id}
                     onClick={() => popBubble(b.id)}
+                    onTouchStart={(e) => { e.preventDefault(); popBubble(b.id); }}
                     style={{
                         position: 'absolute',
                         left: `${b.x}%`,
                         top: `${b.y}%`,
-                        width: '60px',
-                        height: '60px',
+                        width: '80px',
+                        height: '80px',
                         backgroundColor: b.color,
                         borderRadius: '50%',
-                        opacity: 0.8,
+                        opacity: 0.9,
                         boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.1), 0 0 10px rgba(255,255,255,0.5)',
                         cursor: 'pointer',
                         transition: 'top 0.05s linear'
