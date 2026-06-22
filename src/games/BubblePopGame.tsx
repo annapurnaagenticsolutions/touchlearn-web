@@ -18,7 +18,7 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 return [...prev, {
                     id: Date.now() + Math.random(),
                     x: Math.random() * 80 + 5,
-                    bottom: 0,
+                    bottom: -10,
                     color: ['#FFB5E8', '#B28DFF', '#85E3FF', '#AFF8DB', '#FFFFD1', '#FFC9DE'][Math.floor(Math.random() * 6)]
                 }];
             });
@@ -28,7 +28,7 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            setBubbles(prev => prev.map(b => ({ ...b, bottom: b.bottom + 1.5 })).filter(b => b.bottom < 100));
+            setBubbles(prev => prev.map(b => ({ ...b, bottom: b.bottom + 2 })).filter(b => b.bottom < 110));
         }, 50);
         return () => clearInterval(moveInterval);
     }, []);
@@ -72,7 +72,7 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             </div>
 
             {/* Bubble play area - fills all remaining vertical space */}
-            <div style={{ position: 'relative', flex: 1, width: '100%', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', flex: 1, width: '100%', overflow: 'hidden', border: '4px dashed rgba(255,255,255,0.6)' }}>
                 {!showWin && bubbles.map(b => (
                     <div
                         key={b.id}

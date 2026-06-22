@@ -90,15 +90,16 @@ function App() {
 
   return (
     <div style={{ 
-      minHeight: '100vh', 
+      height: '100vh', 
       width: '100vw',
       maxWidth: '100%', /* Prevent horizontal scroll */
       fontFamily: "'Nunito', sans-serif",
       color: '#1E1E2E',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden',
     }}>
-      <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+      <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', minHeight: 0, width: '100%' }}>
         {renderGame()}
       </div>
     </div>
