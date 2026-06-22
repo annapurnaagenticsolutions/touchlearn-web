@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { sfx, tts } from '../engine';
+import { BackButton } from '../components/BackButton';
+import { Celebration, triggerHaptic, addStars, setGameStars } from '../components/Celebration';
 
 interface CardPair {
     emoji: string;
@@ -49,8 +51,8 @@ export const MemoryMatchGame: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         if (matched.length > 0 && matched.length === cards.length && cards.length > 0) {
             const t = setTimeout(() => {
                 setShowWin(true);
-                sfx.play('magic');
-                tts.speak("Great job! All pairs matched!", false);
+                addStars(3);
+                setGameStars('memorymatch', 3);
             }, 500);
             return () => clearTimeout(t);
         }
@@ -61,6 +63,7 @@ export const MemoryMatchGame: React.FC<{ onBack: () => void }> = ({ onBack }) =>
         if (flipped.includes(index) || matched.includes(index)) return;
 
         sfx.play('pop');
+        triggerHaptic(20);
         const card = cards[index];
         tts.speak(card.nameEn, false);
 
@@ -73,114 +76,85 @@ export const MemoryMatchGame: React.FC<{ onBack: () => void }> = ({ onBack }) =>
                 const [first, second] = newFlipped;
                 if (cards[first].emoji === cards[second].emoji) {
                     sfx.play('correct');
+                    triggerHaptic([30, 30, 30]);
                     setMatched(prev => [...prev, first, second]);
                 }
                 setFlipped([]);
                 isChecking.current = false;
-            }, 1500);
+            }, 1200);
         }
     };
 
     return (
-        <div style={{ padding: '20px', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box' }}>
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
-                <button 
-                    onClick={() => { sfx.play('click'); onBack(); }}
-                    style={{
-                        fontSize: '20px', 
-                        background: '#FF9AA2', 
-                        border: '4px solid #FFB7B2', 
-                        color: 'white', 
-                        cursor: 'pointer', 
-                        fontWeight: '900',
-                        padding: '10px 20px',
-                        borderRadius: '20px',
-                        boxShadow: '0 6px 0 #FFB7B2',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        marginBottom: '16px',
-                        zIndex: 100
-                    }}
-                    className="glossy"
-                    onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(6px)'; e.currentTarget.style.boxShadow = '0 0 0 #FFB7B2'; }}
-                    onPointerUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
-                    onPointerLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
-                >
-                    <span style={{ fontSize: '28px' }}>⬅️</span> Menu
-                </button>
+        <div style={{ padding: '20px', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', boxSizing: 'border-box', position: 'relative' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <BackButton onBack={onBack} />
+                <div style={{
+                    background: 'rgba(255,255,255,0.9)',
+                    borderRadius: '20px',
+                    padding: '6px 16px',
+                    fontSize: '18px',
+                    fontWeight: '900',
+                    color: '#CBA6F7',
+                }}>
+                    🎯 {matched.length / 2} / {cards.length / 2}
+                </div>
             </div>
 
-            <h1 style={{ color: '#CBA6F7', margin: '0 0 8px 0' }}>🧩 Memory Match</h1>
-            <div style={{ color: '#9399B2', fontSize: '16px', marginBottom: '4px' }}>Goal: {cards.length / 2} pairs</div>
-            <div style={{ color: '#9399B2', fontSize: '14px', marginBottom: '16px' }}>Found: {matched.length / 2}</div>
+            <h1 style={{ color: '#CBA6F7', margin: '0 0 16px 0', fontSize: '28px', fontWeight: '900' }}>🧩 Memory Match</h1>
 
-            {showWin ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-                    <div style={{ fontSize: '64px', marginBottom: '8px' }}>🎉</div>
-                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#A6E3A1', marginBottom: '16px', textAlign: 'center' }}>Awesome! All pairs matched.</div>
-                    <button 
-                        onClick={() => {
-                            sfx.play('click');
-                            initGame();
-                        }}
-                        style={{
-                            padding: '12px 24px',
-                            fontSize: '18px',
-                            background: 'transparent',
-                            border: '2px solid #89B4FA',
-                            color: '#89B4FA',
-                            borderRadius: '24px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Play Again
-                    </button>
-                </div>
-            ) : (
-                <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(3, 1fr)', 
-                    gap: '12px',
-                    justifyContent: 'center'
-                }}>
-                    {cards.map((card, index) => {
-                        const isFlipped = flipped.includes(index);
-                        const isMatched = matched.includes(index);
-                        const showFront = isFlipped || isMatched;
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '16px',
+                justifyContent: 'center',
+            }}>
+                {cards.map((card, index) => {
+                    const isFlipped = flipped.includes(index);
+                    const isMatched = matched.includes(index);
+                    const showFront = isFlipped || isMatched;
 
-                        let bg = '#313244';
-                        if (isMatched) bg = 'rgba(166, 227, 161, 0.3)';
-                        else if (isFlipped) bg = '#45475A';
+                    let bg = '#313244';
+                    if (isMatched) bg = 'rgba(166, 227, 161, 0.3)';
+                    else if (isFlipped) bg = '#45475A';
 
-                        return (
-                            <div
-                                key={index}
-                                onClick={() => handleCardClick(index)}
-                                style={{
-                                    width: '80px',
-                                    height: '80px',
-                                    backgroundColor: bg,
-                                    borderRadius: '16px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    cursor: (isFlipped || isMatched) ? 'default' : 'pointer',
-                                    userSelect: 'none',
-                                    transform: isMatched ? 'scale(0.95)' : 'scale(1)',
-                                    transition: 'transform 0.2s, background-color 0.2s'
-                                }}
-                            >
-                                {showFront ? (
-                                    <span style={{ fontSize: '40px' }}>{card.emoji}</span>
-                                ) : (
-                                    <span style={{ fontSize: '32px', color: '#89B4FA' }}>❓</span>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
+                    return (
+                        <div
+                            key={index}
+                            onClick={() => handleCardClick(index)}
+                            style={{
+                                width: '100px',
+                                height: '100px',
+                                backgroundColor: bg,
+                                borderRadius: '20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: (isFlipped || isMatched) ? 'default' : 'pointer',
+                                userSelect: 'none',
+                                transform: isMatched ? 'scale(0.95)' : 'scale(1)',
+                                transition: 'transform 0.2s, background-color 0.2s',
+                                touchAction: 'manipulation',
+                                boxShadow: isFlipped && !isMatched ? '0 0 15px rgba(137,180,250,0.5)' : 'none',
+                            }}
+                        >
+                            {showFront ? (
+                                <span style={{ fontSize: '48px' }}>{card.emoji}</span>
+                            ) : (
+                                <span style={{ fontSize: '36px', color: '#89B4FA' }}>❓</span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+
+            <Celebration
+                show={showWin}
+                message="All pairs matched!"
+                emoji="🧩"
+                onPlayAgain={initGame}
+                onBack={onBack}
+            />
         </div>
     );
 };

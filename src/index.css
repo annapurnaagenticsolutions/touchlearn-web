@@ -18,17 +18,15 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  /* Prevent zooming but allow vertical scrolling on iOS */
-  touch-action: pan-y; 
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
-  /* Remove overflow: hidden to allow laptop scrolling! */
   background-image: url('/background.png');
   background-size: cover;
   background-position: center bottom;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-color: #A1C4FD; /* fallback */
+  background-color: #A1C4FD;
 }
 
 #root {
@@ -70,4 +68,46 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.4);
+}
+
+/* Celebration particle animation */
+@keyframes celebrationFall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translateY(200px) rotate(360deg) scale(0.5); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-5deg); }
+  75% { transform: rotate(5deg); }
+}
+
+/* iPad touch optimization */
+@media (pointer: coarse) {
+  button, [role="button"] {
+    touch-action: manipulation;
+  }
+}
+
+/* Prevent text selection on long press (iOS) */
+* {
+  -webkit-touch-callout: none;
+}
+
+/* Safe area for iPad notch/home indicator */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }

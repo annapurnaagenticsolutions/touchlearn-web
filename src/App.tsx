@@ -39,7 +39,6 @@ import { BabyAnimalsGame } from './games/BabyAnimalsGame';
 import { SlidingPuzzleGame } from './games/SlidingPuzzleGame';
 import { BasicCategoriesGame } from './games/BasicCategoriesGame';
 import { MathScienceGames } from './games/MathScienceGames';
-import './App.css';
 
 function App() {
   const [currentGame, setCurrentGame] = useState<number>(-1);
@@ -85,7 +84,7 @@ function App() {
       case 36: return <SlidingPuzzleGame onBack={() => setCurrentGame(-1)} />;
       case 37: return <BasicCategoriesGame onBack={() => setCurrentGame(-1)} />;
       case 38: return <MathScienceGames onBack={() => setCurrentGame(-1)} />;
-      default: return <HomeLanding onPick={setCurrentGame} onBack={() => setCurrentGame(-1)} />;
+      default: return <HomeLanding onPick={setCurrentGame} />;
     }
   };
 

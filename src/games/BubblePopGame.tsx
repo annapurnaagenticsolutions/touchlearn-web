@@ -1,66 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import { sfx, tts } from '../engine';
+import { BackButton } from '../components/BackButton';
+import { Celebration, triggerHaptic, addStars, setGameStars } from '../components/Celebration';
+
+const WIN_SCORE = 20;
 
 export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     const [bubbles, setBubbles] = useState<{ id: number, x: number, y: number, color: string }[]>([]);
+    const [score, setScore] = useState(0);
+    const [showWin, setShowWin] = useState(false);
 
     useEffect(() => {
-        tts.speak("Pop the bubbles!", false);
+        tts.speak("Pop the bubbles! Tap to pop!", false);
         const interval = setInterval(() => {
+            if (score >= WIN_SCORE) return;
             setBubbles(prev => {
-                if (prev.length > 15) return prev; // Limit bubbles on screen
+                if (prev.length > 12) return prev;
                 return [...prev, {
-                    id: Date.now(),
-                    x: Math.random() * 80 + 10, // 10% to 90%
-                    y: 100, // Start at bottom
-                    color: ['#FFB5E8', '#B28DFF', '#85E3FF', '#AFF8DB', '#FFFFD1'][Math.floor(Math.random() * 5)]
+                    id: Date.now() + Math.random(),
+                    x: Math.random() * 75 + 12,
+                    y: 100,
+                    color: ['#FFB5E8', '#B28DFF', '#85E3FF', '#AFF8DB', '#FFFFD1', '#FFC9DE'][Math.floor(Math.random() * 6)]
                 }];
             });
-        }, 1500); // Slowed from 800ms
+        }, 1800);
         return () => clearInterval(interval);
-    }, []);
+    }, [score]);
 
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            // Speed reduced to y - 0.5 every 100ms (5% height per second)
-            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 0.5 })).filter(b => b.y > -20)); 
+            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 0.4 })).filter(b => b.y > -20));
         }, 100);
         return () => clearInterval(moveInterval);
     }, []);
 
+    useEffect(() => {
+        if (score >= WIN_SCORE && !showWin) {
+            setShowWin(true);
+            addStars(3);
+            setGameStars('bubblepop', 3);
+        }
+    }, [score, showWin]);
+
     const popBubble = (id: number) => {
         sfx.play('pop');
+        triggerHaptic(30);
         setBubbles(prev => prev.filter(b => b.id !== id));
+        setScore(s => s + 1);
+    };
+
+    const restart = () => {
+        setScore(0);
+        setShowWin(false);
+        setBubbles([]);
     };
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-            <button 
-                    onClick={() => { sfx.play('click'); onBack(); }}
-                    style={{
-                        fontSize: '20px', 
-                        background: '#FF9AA2', 
-                        border: '4px solid #FFB7B2', 
-                        color: 'white', 
-                        cursor: 'pointer', 
-                        fontWeight: '900',
-                        padding: '10px 20px',
-                        borderRadius: '20px',
-                        boxShadow: '0 6px 0 #FFB7B2',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        marginBottom: '16px',
-                        zIndex: 100
-                    }}
-                    className="glossy"
-                    onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(6px)'; e.currentTarget.style.boxShadow = '0 0 0 #FFB7B2'; }}
-                    onPointerUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
-                    onPointerLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
-                >
-                    <span style={{ fontSize: '28px' }}>⬅️</span> Menu
-                </button>
-            {bubbles.map(b => (
+        <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <BackButton onBack={onBack} />
+                <div style={{
+                    background: 'rgba(255,255,255,0.9)',
+                    borderRadius: '20px',
+                    padding: '8px 20px',
+                    fontSize: '22px',
+                    fontWeight: '900',
+                    color: '#F38BA8',
+                }}>
+                    🫧 {score} / {WIN_SCORE}
+                </div>
+            </div>
+
+            {!showWin && bubbles.map(b => (
                 <div
                     key={b.id}
                     className="glossy"
@@ -69,17 +80,26 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                         position: 'absolute',
                         left: `${b.x}%`,
                         top: `${b.y}%`,
-                        width: '100px', // Larger hit area
-                        height: '100px',
+                        width: '120px',
+                        height: '120px',
                         backgroundColor: b.color,
                         borderRadius: '50%',
-                        opacity: 0.9,
-                        boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.1), 0 0 10px rgba(255,255,255,0.5)',
+                        opacity: 0.85,
+                        boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.1), 0 0 15px rgba(255,255,255,0.5)',
                         cursor: 'pointer',
-                        transition: 'top 0.08s linear'
+                        transition: 'top 0.08s linear',
+                        touchAction: 'none',
                     }}
                 />
             ))}
+
+            <Celebration
+                show={showWin}
+                message="You popped them all!"
+                emoji="🫧"
+                onPlayAgain={restart}
+                onBack={onBack}
+            />
         </div>
     );
 };
