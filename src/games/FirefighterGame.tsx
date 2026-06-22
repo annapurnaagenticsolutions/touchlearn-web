@@ -73,19 +73,30 @@ export const FirefighterGame: React.FC<FirefighterGameProps> = ({ onBack }) => {
       {/* Header with Back Button */}
       <div style={{ display: 'flex', width: '100%', alignItems: 'center', marginBottom: '12px' }}>
         <button 
-          onClick={onBack}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#313244',
-            color: '#CDD6F4',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-          }}
-        >
-          ← Back
-        </button>
+                    onClick={() => { sfx.play('click'); onBack(); }}
+                    style={{
+                        fontSize: '20px', 
+                        background: '#FF9AA2', 
+                        border: '4px solid #FFB7B2', 
+                        color: 'white', 
+                        cursor: 'pointer', 
+                        fontWeight: '900',
+                        padding: '10px 20px',
+                        borderRadius: '20px',
+                        boxShadow: '0 6px 0 #FFB7B2',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                        zIndex: 100
+                    }}
+                    className="glossy"
+                    onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(6px)'; e.currentTarget.style.boxShadow = '0 0 0 #FFB7B2'; }}
+                    onPointerUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
+                    onPointerLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
+                >
+                    <span style={{ fontSize: '28px' }}>⬅️</span> Menu
+                </button>
         <div style={{ flex: 1, textAlign: 'center', marginRight: '80px' }}>
           <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 'bold', color: '#F38BA8' }}>
             🚒 Firefighter

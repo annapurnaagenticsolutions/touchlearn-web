@@ -7,17 +7,18 @@ interface BalloonData {
     yOffset: number;
     emoji: string;
     color: string;
+    hueRotate: number;
 }
 
 const colors = [
-    { emoji: "🎈", name: "Red", hex: "#F38BA8" },
-    { emoji: "🎈", name: "Blue", hex: "#89B4FA" },
-    { emoji: "🎈", name: "Green", hex: "#A6E3A1" },
-    { emoji: "🎈", name: "Yellow", hex: "#F9E2AF" },
-    { emoji: "🎈", name: "Purple", hex: "#CBA6F7" },
-    { emoji: "🎈", name: "Orange", hex: "#FAB387" },
-    { emoji: "🎈", name: "Pink", hex: "#F38BA8" },
-    { emoji: "🎈", name: "Sky", hex: "#89B4FA" }
+    { emoji: "🎈", name: "Red", hueRotate: 0 },
+    { emoji: "🎈", name: "Blue", hueRotate: 210 },
+    { emoji: "🎈", name: "Green", hueRotate: 120 },
+    { emoji: "🎈", name: "Yellow", hueRotate: 60 },
+    { emoji: "🎈", name: "Purple", hueRotate: 280 },
+    { emoji: "🎈", name: "Orange", hueRotate: 30 },
+    { emoji: "🎈", name: "Pink", hueRotate: 320 },
+    { emoji: "🎈", name: "Cyan", hueRotate: 180 }
 ];
 
 const generateBalloons = (): BalloonData[] => {
@@ -28,7 +29,8 @@ const generateBalloons = (): BalloonData[] => {
             xOffset: (index % 4) * 80 + (Math.random() * 30 - 15),
             yOffset: Math.floor(index / 4) * 80 + (Math.random() * 30 - 15),
             emoji: c.emoji,
-            color: c.name
+            color: c.name,
+            hueRotate: c.hueRotate
         };
     });
 };
@@ -65,9 +67,28 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
                 <button 
                     onClick={() => { sfx.play('click'); onBack(); }}
-                    style={{ fontSize: '24px', background: 'transparent', border: 'none', color: '#1E1E2E', cursor: 'pointer', fontWeight: 'bold' }}
+                    style={{
+                        fontSize: '20px', 
+                        background: '#FF9AA2', 
+                        border: '4px solid #FFB7B2', 
+                        color: 'white', 
+                        cursor: 'pointer', 
+                        fontWeight: '900',
+                        padding: '10px 20px',
+                        borderRadius: '20px',
+                        boxShadow: '0 6px 0 #FFB7B2',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '16px',
+                        zIndex: 100
+                    }}
+                    className="glossy"
+                    onPointerDown={(e) => { e.currentTarget.style.transform = 'translateY(6px)'; e.currentTarget.style.boxShadow = '0 0 0 #FFB7B2'; }}
+                    onPointerUp={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
+                    onPointerLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 0 #FFB7B2'; }}
                 >
-                    ← Back
+                    <span style={{ fontSize: '28px' }}>⬅️</span> Menu
                 </button>
             </div>
 
@@ -98,8 +119,7 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                         <div
                             key={b.id}
                             className="glossy"
-                            onClick={() => handlePop(b.id, b.color)}
-                            onTouchStart={(e) => { e.preventDefault(); handlePop(b.id, b.color); }}
+                            onPointerDown={(e) => { e.preventDefault(); handlePop(b.id, b.color); }}
                             style={{
                                 position: 'absolute',
                                 left: `${b.xOffset + 20}px`, // Adjusted for bigger balloon center
@@ -107,7 +127,8 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                 fontSize: '64px', // Bigger balloons!
                                 cursor: 'pointer',
                                 transition: 'transform 0.1s, opacity 0.2s',
-                                userSelect: 'none'
+                                userSelect: 'none',
+                                filter: `hue-rotate(${b.hueRotate}deg)`
                             }}
                         >
                             {b.emoji}
