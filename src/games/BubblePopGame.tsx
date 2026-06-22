@@ -6,7 +6,7 @@ import { Celebration, triggerHaptic, addStars, setGameStars } from '../component
 const WIN_SCORE = 20;
 
 export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
-    const [bubbles, setBubbles] = useState<{ id: number, x: number, y: number, color: string }[]>([]);
+    const [bubbles, setBubbles] = useState<{ id: number, x: number, bottom: number, color: string }[]>([]);
     const [score, setScore] = useState(0);
     const [showWin, setShowWin] = useState(false);
 
@@ -17,8 +17,8 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 if (prev.length > 8) return prev;
                 return [...prev, {
                     id: Date.now() + Math.random(),
-                    x: Math.random() * 70 + 15,
-                    y: 85,
+                    x: Math.random() * 80 + 5,
+                    bottom: 0,
                     color: ['#FFB5E8', '#B28DFF', '#85E3FF', '#AFF8DB', '#FFFFD1', '#FFC9DE'][Math.floor(Math.random() * 6)]
                 }];
             });
@@ -28,7 +28,7 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 1.2 })).filter(b => b.y > -15));
+            setBubbles(prev => prev.map(b => ({ ...b, bottom: b.bottom + 1.5 })).filter(b => b.bottom < 100));
         }, 50);
         return () => clearInterval(moveInterval);
     }, []);
@@ -55,8 +55,9 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     };
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', padding: '20px', boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', overflow: 'hidden', boxSizing: 'border-box' }}>
+            {/* Header */}
+            <div style={{ padding: '20px 20px 8px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                 <BackButton onBack={onBack} />
                 <div style={{
                     background: 'rgba(255,255,255,0.9)',
@@ -70,27 +71,30 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 </div>
             </div>
 
-            {!showWin && bubbles.map(b => (
-                <div
-                    key={b.id}
-                    className="glossy"
-                    onPointerDown={(e) => { e.preventDefault(); popBubble(b.id); }}
-                    style={{
-                        position: 'absolute',
-                        left: `${b.x}%`,
-                        top: `${b.y}%`,
-                        width: '120px',
-                        height: '120px',
-                        backgroundColor: b.color,
-                        borderRadius: '50%',
-                        opacity: 0.85,
-                        boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.1), 0 0 15px rgba(255,255,255,0.5)',
-                        cursor: 'pointer',
-                        transition: 'top 0.08s linear',
-                        touchAction: 'none',
-                    }}
-                />
-            ))}
+            {/* Bubble play area - fills all remaining vertical space */}
+            <div style={{ position: 'relative', flex: 1, width: '100%', overflow: 'hidden' }}>
+                {!showWin && bubbles.map(b => (
+                    <div
+                        key={b.id}
+                        className="glossy"
+                        onPointerDown={(e) => { e.preventDefault(); popBubble(b.id); }}
+                        style={{
+                            position: 'absolute',
+                            left: `${b.x}%`,
+                            bottom: `${b.bottom}%`,
+                            width: '100px',
+                            height: '100px',
+                            backgroundColor: b.color,
+                            borderRadius: '50%',
+                            opacity: 0.85,
+                            boxShadow: 'inset -8px -8px 16px rgba(0,0,0,0.1), 0 0 12px rgba(255,255,255,0.5)',
+                            cursor: 'pointer',
+                            transition: 'bottom 0.08s linear',
+                            touchAction: 'none',
+                        }}
+                    />
+                ))}
+            </div>
 
             <Celebration
                 show={showWin}
