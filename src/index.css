@@ -22,14 +22,18 @@ body {
   touch-action: pan-y; 
   user-select: none;
   -webkit-user-select: none;
-  overflow: hidden;
-  /* Fun background pattern */
-  background: linear-gradient(180deg, #A1C4FD 0%, #C2E9FB 100%);
+  /* Remove overflow: hidden to allow laptop scrolling! */
+  background-image: url('/background.png');
+  background-size: cover;
+  background-position: center bottom;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-color: #A1C4FD; /* fallback */
 }
 
 #root {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }

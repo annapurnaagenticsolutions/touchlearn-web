@@ -22,8 +22,9 @@ export const BubblePopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => {
 
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 1 })).filter(b => b.y > -20)); // Slower rising
-        }, 80); // Slowed from 50ms (and y-2 to y-1)
+            // Speed reduced to y - 0.5 every 100ms (5% height per second)
+            setBubbles(prev => prev.map(b => ({ ...b, y: b.y - 0.5 })).filter(b => b.y > -20)); 
+        }, 100);
         return () => clearInterval(moveInterval);
     }, []);
 

@@ -93,11 +93,11 @@ function App() {
     <div style={{ 
       minHeight: '100vh', 
       width: '100vw',
+      maxWidth: '100%', /* Prevent horizontal scroll */
       fontFamily: "'Nunito', sans-serif",
       color: '#1E1E2E',
       display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden'
+      flexDirection: 'column'
     }}>
       <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
         {renderGame()}

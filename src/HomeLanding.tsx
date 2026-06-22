@@ -41,8 +41,16 @@ export const HomeLanding: React.FC<Props & { onPick: (index: number) => void }> 
     const colors = ['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA'];
 
     return (
-        <div style={{ padding: '20px', width: '100%', maxWidth: '800px', margin: '0 auto', height: '100%', overflowY: 'auto' }}>
-            <h1 style={{ color: '#1E1E2E', fontSize: '32px', fontWeight: '900', marginBottom: '24px', textAlign: 'center', textShadow: '2px 2px 4px rgba(255,255,255,0.5)' }}>
+        <div style={{ padding: '20px', width: '100%', maxWidth: '800px', margin: '0 auto', minHeight: '100vh', boxSizing: 'border-box' }}>
+            <h1 style={{ 
+                color: 'white', 
+                fontSize: '36px', 
+                fontWeight: '900', 
+                marginBottom: '24px', 
+                textAlign: 'center', 
+                textShadow: '0 4px 0 #FF9AA2, 0 6px 10px rgba(0,0,0,0.3)',
+                letterSpacing: '1px'
+            }}>
                 What would you like to play today? 🎮
             </h1>
             
