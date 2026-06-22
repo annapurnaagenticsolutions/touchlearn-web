@@ -18,8 +18,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  /* Prevent zooming and scrolling issues on iOS */
-  touch-action: none; 
+  /* Prevent zooming but allow vertical scrolling on iOS */
+  touch-action: pan-y; 
   user-select: none;
   -webkit-user-select: none;
   overflow: hidden;
@@ -32,6 +32,23 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Glossy UI Effect */
+.glossy {
+  position: relative;
+  overflow: hidden;
+}
+.glossy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  border-radius: inherit;
 }
 
 /* Custom Scrollbar for grids */

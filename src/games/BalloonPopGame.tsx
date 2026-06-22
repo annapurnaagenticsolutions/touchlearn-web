@@ -42,7 +42,7 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             const t = setTimeout(() => {
                 setBalloons(generateBalloons());
                 setPopped(0);
-            }, 800);
+            }, 1500); // Slowed from 800ms to 1500ms
             return () => clearTimeout(t);
         }
     }, [balloons.length]);
@@ -65,19 +65,19 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
                 <button 
                     onClick={() => { sfx.play('click'); onBack(); }}
-                    style={{ fontSize: '24px', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}
+                    style={{ fontSize: '24px', background: 'transparent', border: 'none', color: '#1E1E2E', cursor: 'pointer', fontWeight: 'bold' }}
                 >
                     ← Back
                 </button>
             </div>
 
-            <h1 style={{ color: '#F38BA8', fontSize: '24px', marginTop: '10px' }}>🎈 Balloon Pop</h1>
-            <p style={{ color: '#9399B2', fontSize: '16px' }}>Popped: {popped}</p>
+            <h1 style={{ color: '#F38BA8', fontSize: '28px', marginTop: '10px', textShadow: '1px 1px 2px rgba(255,255,255,0.5)' }}>🎈 Balloon Pop</h1>
+            <p style={{ color: '#1E1E2E', fontSize: '18px', fontWeight: 'bold' }}>Popped: {popped}</p>
 
             <div style={{
                 width: '100%',
                 maxWidth: '400px',
-                height: '340px',
+                height: '380px', // slightly taller for bigger balloons
                 backgroundColor: '#87CEEB', // Sky blue background
                 borderRadius: '20px',
                 position: 'relative',
@@ -85,23 +85,26 @@ export const BalloonPopGame: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                boxShadow: 'inset 0 0 20px rgba(255,255,255,0.5)'
             }}>
                 {balloons.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', animation: 'fadeIn 0.5s' }}>
-                        <span style={{ fontSize: '64px' }}>🎉</span>
-                        <span style={{ color: '#A6E3A1', fontSize: '18px', fontWeight: 'bold' }}>All popped!</span>
+                        <span style={{ fontSize: '80px' }}>🎉</span>
+                        <span style={{ color: '#A6E3A1', fontSize: '24px', fontWeight: 'bold', textShadow: '1px 1px 2px rgba(0,0,0,0.2)' }}>All popped!</span>
                     </div>
                 ) : (
                     balloons.map(b => (
                         <div
                             key={b.id}
+                            className="glossy"
                             onClick={() => handlePop(b.id, b.color)}
+                            onTouchStart={(e) => { e.preventDefault(); handlePop(b.id, b.color); }}
                             style={{
                                 position: 'absolute',
-                                left: `${b.xOffset + 40}px`,
+                                left: `${b.xOffset + 20}px`, // Adjusted for bigger balloon center
                                 top: `${b.yOffset + 40}px`,
-                                fontSize: '44px',
+                                fontSize: '64px', // Bigger balloons!
                                 cursor: 'pointer',
                                 transition: 'transform 0.1s, opacity 0.2s',
                                 userSelect: 'none'

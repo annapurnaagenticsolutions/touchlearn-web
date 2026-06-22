@@ -37,7 +37,7 @@ export const PatternRepeatGame: React.FC<Props> = ({ onBack }) => {
     for (let i = 0; i < correctSequence.length; i++) {
       sfx.play('pop');
       setActiveSlot(i);
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       setActiveSlot(-1);
       await new Promise(resolve => setTimeout(resolve, 200));
     }

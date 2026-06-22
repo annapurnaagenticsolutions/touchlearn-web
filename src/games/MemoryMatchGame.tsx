@@ -77,7 +77,7 @@ export const MemoryMatchGame: React.FC<{ onBack: () => void }> = ({ onBack }) =>
                 }
                 setFlipped([]);
                 isChecking.current = false;
-            }, 600);
+            }, 1500);
         }
     };
 

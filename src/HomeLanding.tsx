@@ -50,6 +50,7 @@ export const HomeLanding: React.FC<Props & { onPick: (index: number) => void }> 
                 {featured.map((name, index) => (
                     <div 
                         key={name}
+                        className="glossy"
                         onClick={() => {
                             sfx.play('click');
                             onPick(index);
